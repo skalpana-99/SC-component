@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../features/breadcrumbs/Breadcrumbs.astro';
+import { prepareBreadcrumbs } from '../../features/breadcrumbs/breadcrumbs.service';
+const breadcrumbs = prepareBreadcrumbs({
+  ancestors: [{ label: 'Home', href: '/' }, { label: 'Cart drawer', href: '/cart-drawer' }],
+  currentPage: 'Checkout link preview',
+});
+---
+<Layout title="Checkout link preview | Astro starter">
+  <main>
+    <div class="demo-context"><span>Demo · Checkout destination preview</span><a href="/cart-drawer">Back to cart drawer</a></div>
+    <div class="page-breadcrumb"><Breadcrumbs breadcrumbs={breadcrumbs} /></div>
+    <div class="page-heading"><h1>Checkout link preview</h1><p>The demo checkout link reaches this page. A merchant supplies their actual checkout URL when adopting the component.</p></div>
+  </main>
+</Layout>
+<style>.page-breadcrumb { margin-top: 28px; }</style>

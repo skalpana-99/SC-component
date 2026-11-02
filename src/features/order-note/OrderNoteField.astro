@@ -1,0 +1,33 @@
+---
+import type { OrderNoteFieldProps as Props } from './order-note.types';
+const { id, data, mode, label = 'Order note (optional)' } = Astro.props;
+---
+<form class="order-note" data-order-note data-mode={mode} data-available={String(data.available)} data-max-length={data.maxLength} data-state="idle">
+  <label for={id}>{label}</label>
+  <p id={`${id}-help`} class="note-help">Add instructions for this order. Up to {data.maxLength} characters. Saving an empty note clears it.</p>
+  <textarea id={id} name="order_note" rows="5" aria-describedby={`${id}-help ${id}-count ${id}-status`} aria-invalid="false" disabled>{data.note}</textarea>
+  <div class="note-actions"><button type="submit" disabled>Save note</button><span id={`${id}-count`} data-note-count class="note-count"></span></div>
+  <p id={`${id}-status`} role="status" aria-label="Order note status" aria-live="polite" aria-atomic="true">{data.message}</p>
+  <noscript><p class="note-help">Enable JavaScript to edit and save your order note.</p></noscript>
+</form>
+<script>
+  import { initOrderNoteFields } from './order-note.browser';
+  initOrderNoteFields();
+</script>
+<style>
+  .order-note { max-width: 600px; }
+  label { display: block; margin-bottom: 10px; font-size: 16px; line-height: 1.5; font-weight: 500; }
+  .note-help { margin: 0 0 18px; max-width: 60ch; color: #666; font-size: 13px; line-height: 1.6; }
+  textarea { display: block; width: 100%; min-height: 160px; padding: 14px; border: 1px solid #bbb; border-radius: 0; resize: vertical; background: #fff; color: #202020; font: inherit; font-size: 15px; line-height: 1.6; }
+  textarea:focus-visible { outline: 2px solid #202020; outline-offset: 2px; }
+  textarea[aria-invalid="true"] { border-color: #9b2424; }
+  textarea:disabled { background: #f5f5f5; color: #666; }
+  .note-actions { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-top: 20px; }
+  button { min-height: 48px; padding: 12px 24px; border: 1px solid #202020; border-radius: 0; background: #202020; color: #fff; font: inherit; font-size: 14px; line-height: 1.5; cursor: pointer; }
+  button:hover:not(:disabled) { background: #3b3b3b; }
+  button:focus-visible { outline: 2px solid #202020; outline-offset: 4px; }
+  button:disabled { background: #e9e9e9; border-color: #e9e9e9; color: #666; cursor: not-allowed; }
+  .note-count { color: #666; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  [role="status"] { min-height: 24px; margin: 16px 0 0; font-size: 14px; line-height: 1.6; color: #666; }
+  [data-state="error"] [role="status"], [data-state="uncertain"] [role="status"] { color: #9b2424; }
+</style>

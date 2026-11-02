@@ -1,0 +1,25 @@
+{
+  "results": [
+    "Modal loads once, traps focus, locks scroll, closes with Escape and restores focus/previous scroll style",
+    "Floating trigger opens the same drawer; desktop backdrop closes it",
+    "Confirmed demo removal refreshes items, count and totals before checkout becomes available",
+    "Supplied demo checkout link reaches a clearly identified destination preview",
+    "Removing every demo item shows an empty basket with no checkout link",
+    "Refresh failure retains the last items, blocks stale checkout and supports an explicit retry",
+    "Empty response is distinct from a failed response",
+    "Confirmed AddToCartButton action opens the drawer and refreshes its coherent demo cart state",
+    "An add during a pending read schedules one fresh read, even after the drawer closes",
+    "desktop: right-aligned responsive drawer, contained cart rows and scrolling without horizontal overflow",
+    "mobile: right-aligned responsive drawer, contained cart rows and scrolling without horizontal overflow",
+    "small-mobile: right-aligned responsive drawer, contained cart rows and scrolling without horizontal overflow",
+    "Closing during a read does not reopen the drawer when the response arrives",
+    "A removal finishing after close/reopen still refreshes the current cart and totals",
+    "No-JavaScript state keeps opening controls disabled with an explanation",
+    "A visitor without a cart sees an empty live basket without creating a session",
+    "Live drawer reuses AddToCart cookies, loads one quote/catalogue, displays authoritative prices/options/totals and supplied checkout link",
+    "Live error response: retained prior view, blocked checkout, no fixture/session fallback",
+    "Live invalid response: retained prior view, blocked checkout, no fixture/session fallback",
+    "Missing live checkout configuration does not invent a checkout destination",
+    "Cart read action enforces same origin/method and no browser runtime errors occurred"
+  ]
+}

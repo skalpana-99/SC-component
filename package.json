@@ -1,0 +1,26 @@
+{
+  "name": "astro-product-card-starter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.23.4" },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env ./node_modules/astro/bin/astro.mjs dev --host 127.0.0.1",
+    "build": "astro build",
+    "start": "node --env-file-if-exists=.env ./dist/server/entry.mjs",
+    "preview": "npm run start",
+    "check": "astro check",
+    "test": "tsx --test tests/*.test.ts",
+    "test:browser": "node tests/browser.mjs",
+    "test:quantity-browser": "node tests/quantity-stepper.browser.mjs",
+    "test:cart-browser": "node tests/add-to-cart.browser.mjs",
+    "test:cart-item-browser": "node tests/cart-item.browser.mjs",
+    "test:drawer-browser": "node tests/cart-drawer.browser.mjs",
+    "test:note-browser": "node tests/order-note.browser.mjs",
+    "test:breadcrumbs-browser": "node tests/breadcrumbs.browser.mjs",
+    "test:accordion-browser": "node tests/accordion.browser.mjs",
+    "test:related-browser": "node tests/related-products.browser.mjs"
+  },
+  "dependencies": { "astro": "7.4.4", "@astrojs/node": "11.1.9" },
+  "devDependencies": { "@astrojs/check": "^0.9.9", "@types/node": "^24.0.0", "playwright": "^1.63.0", "tsx": "^4.20.0", "typescript": "^5.9.3" }
+}

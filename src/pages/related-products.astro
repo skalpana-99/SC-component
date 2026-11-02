@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+import RelatedProducts from '../features/related-products/RelatedProducts.astro';
+import { prepareRelatedProducts } from '../features/related-products/related-products.service';
+import selectionFixture from '../features/related-products/related-products.demo.json';
+import { CatalogError, parseCatalog, readProductsConfig } from '../features/products/products.api';
+import { getProductCards } from '../features/products/products.service';
+import catalogFixture from '../features/products/catalog.demo.json';
+import type { ProductCardData, ProductsConfig } from '../features/products/products.types';
+import type { RelatedProductsData, RelatedProductsSelection } from '../features/related-products/related-products.types';
+
+const configured = Astro.url.searchParams.get('source') === 'catalog';
+const example = configured ? 'sample' : Astro.url.searchParams.get('example') ?? 'sample';
+const selection: RelatedProductsSelection = configured ? {
+  productIds: Astro.url.searchParams.getAll('product'),
+  currentProductId: Astro.url.searchParams.get('current') || undefined,
+} : { productIds: example === 'empty' ? [] : [...selectionFixture.productIds] };
+let mode = configured ? process.env.PRODUCTS_DATA_MODE ?? 'demo' : 'demo';
+let cards: ProductCardData[] = [];
+let data: RelatedProductsData = { products: [] };
+let failed = false;
+try {
+  const config: ProductsConfig = configured ? readProductsConfig(process.env) : { mode: 'demo' };
+  mode = config.mode;
+  let loadCatalog;
+  if (!configured && example === 'edges') {
+    const fixture = structuredClone(catalogFixture);
+    fixture.products[0].storefront_uid = 'unmapped-related-product';
+    fixture.products[0].title = 'A lightweight everyday track jacket with a deliberately long product title and AnUnbrokenProductReferenceForSmallScreenWrapping';
+    delete (fixture.products[1] as Partial<typeof fixture.products[1]>).compare_at_minor;
+    selection.productIds[0] = 'unmapped-related-product';
+    loadCatalog = async () => parseCatalog(fixture);
+  } else if (!configured && example === 'error') {
+    loadCatalog = async () => { throw new CatalogError('Simulated catalogue failure.'); };
+  }
+  // Reuse this single prepared set for selection and the demo's selection form.
+  cards = await getProductCards(config, loadCatalog);
+  data = prepareRelatedProducts(cards, selection);
+} catch (error) {
+  failed = true;
+  Astro.response.status = 503;
+  console.error(error instanceof CatalogError ? error.message : 'Related product preparation failed.');
+}
+Astro.response.headers.set('Cache-Control', 'no-store');
+---
+<Layout title="Related products | Astro starter">
+  <main>
+    <div class="demo-context">
+      <span>{configured ? mode === 'live' ? 'Live mode · Commerce catalogue · Supplied product IDs' : mode === 'demo' ? 'Demo mode · Configured catalogue fixture · Supplied product IDs' : 'Configuration error · Unknown data mode' : 'Demo mode · Local catalogue fixture · Sample selection'}</span>
+      <a href="/">Back to product cards</a>
+    </div>
+    <div class="page-heading"><h1>RelatedProducts component</h1><p>A supplied set of products, presented with the existing product cards.</p></div>
+    <nav class="examples" aria-label="Related product examples">
+      <a href="/related-products">Sample selection</a>
+      <a href="/related-products?example=edges">Card edge cases</a>
+      <a href="/related-products?example=empty">Empty selection</a>
+      <a href="/related-products?example=error">Catalogue failure</a>
+      <a href="/related-products?source=catalog">Configured catalogue</a>
+    </nav>
+    {configured && !failed && <form method="get" action="/related-products" class="selection-form">
+      <input type="hidden" name="source" value="catalog" />
+      {selection.currentProductId && <input type="hidden" name="current" value={selection.currentProductId} />}
+      <fieldset><legend>Choose products for this example</legend><p>This demo control supplies IDs; it does not establish product relationships.</p>
+        {cards.length > 0 ? <div class="choices">{cards.map(card => <label><input type="checkbox" name="product" value={card.id} checked={selection.productIds.includes(card.id)} />{card.title}</label>)}</div> : <p>No listed products are available in this catalogue.</p>}
+      </fieldset>
+      <button type="submit">Show selected products</button>
+    </form>}
+    {failed ? <section class="state" aria-labelledby="related-error"><h2 id="related-error">We couldn’t load the related products</h2><p>Please try again. Check the catalogue configuration and supplied product IDs if this continues.</p><a href={Astro.url.pathname + Astro.url.search}>Try again</a></section>
+      : <RelatedProducts id="related-demo" data={data} />}
+  </main>
+</Layout>
+<style>
+  .examples { display: flex; flex-wrap: wrap; gap: 16px 24px; margin-bottom: 36px; font-size: 13px; color: #666; }
+  .selection-form { margin-bottom: 40px; padding: 24px 0; border-block: 1px solid #e7e7e7; }
+  fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+  legend { font-size: 18px; font-weight: 500; }
+  fieldset p { font-size: 13px; color: #666; line-height: 1.6; }
+  .choices { display: flex; flex-wrap: wrap; gap: 14px 24px; margin: 20px 0; }
+  label { display: flex; align-items: baseline; gap: 8px; max-width: 100%; font-size: 14px; overflow-wrap: anywhere; cursor: pointer; }
+  input { flex-shrink: 0; accent-color: #202020; }
+  button { border: 1px solid #202020; border-radius: 0; padding: 12px 18px; background: #202020; color: #fff; font: inherit; font-size: 13px; cursor: pointer; }
+  input:focus-visible, button:focus-visible { outline: 2px solid #202020; outline-offset: 4px; }
+</style>

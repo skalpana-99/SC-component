@@ -1,0 +1,16 @@
+{
+  "results": [
+    "Explicit demo selection reuses three ProductCards with semantic heading levels, exact prices and local dimensioned images",
+    "desktop: 3 grid columns with no horizontal overflow",
+    "tablet: 2 grid columns with no horizontal overflow",
+    "mobile: 1 grid columns with no horizontal overflow",
+    "small-mobile: 1 grid columns with no horizontal overflow",
+    "Existing card behaviour preserves long titles, deliberate image placeholders, absent comparison prices and low-stock labels",
+    "Empty selection and catalogue failure have distinct understandable states",
+    "Configured catalogue loads once per page; native selection controls supply IDs without inventing relationships",
+    "Live selection preserves supplied order while excluding current, duplicate, unlisted and unavailable IDs",
+    "Live HTTP, invalid-price, ok:false and malformed-JSON failures report errors without demo fallback",
+    "Cards and the demo selection form work without JavaScript",
+    "No browser runtime errors, browser API calls or external requests"
+  ]
+}

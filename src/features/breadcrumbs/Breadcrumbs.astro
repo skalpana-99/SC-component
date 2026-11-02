@@ -1,0 +1,23 @@
+---
+import type { BreadcrumbsProps as Props } from './breadcrumbs.types';
+const { breadcrumbs, label = 'Breadcrumb' } = Astro.props;
+---
+{breadcrumbs.items.length > 0 && <nav class="breadcrumbs" aria-label={label}>
+  <ol role="list">
+    {breadcrumbs.items.map((item, index) => <li>
+      {index > 0 && <span class="separator" aria-hidden="true">/</span>}
+      {item.current ? <span aria-current="page">{item.label}</span> : <a href={item.href}>{item.label}</a>}
+    </li>)}
+  </ol>
+</nav>}
+<style>
+  ol { display: flex; flex-wrap: wrap; row-gap: 8px; list-style: none; margin: 0; padding: 0; }
+  li { display: flex; align-items: baseline; gap: 10px; max-width: 100%; min-width: 0; font-size: 13px; line-height: 1.65; }
+  a, [aria-current] { min-width: 0; overflow-wrap: anywhere; }
+  a { color: #666; text-decoration: none; text-underline-offset: 4px; }
+  a:hover { color: #202020; text-decoration: underline; }
+  a:focus-visible { outline: 2px solid #202020; outline-offset: 4px; }
+  [aria-current] { color: #202020; font-weight: 500; }
+  .separator { flex-shrink: 0; margin-inline-start: 10px; color: #777; user-select: none; }
+  @media (max-width: 767px) { li { gap: 8px; } .separator { margin-inline-start: 8px; } }
+</style>

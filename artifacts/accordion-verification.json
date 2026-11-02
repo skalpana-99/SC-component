@@ -1,0 +1,15 @@
+{
+  "results": [
+    "Explicit demo source; answers are server-rendered while disclosures start closed",
+    "Mouse expansion/collapse, separate paragraphs and repeated toggles; other items retain their state",
+    "Native accessible expanded state, Enter/Space controls, visible keyboard focus and tab order",
+    "Multiple component instances stay independent; Unicode and literal markup render as safe text",
+    "desktop: long questions, paragraphs and unbroken text wrap without horizontal overflow",
+    "mobile: long questions, paragraphs and unbroken text wrap without horizontal overflow",
+    "small-mobile: long questions, paragraphs and unbroken text wrap without horizontal overflow",
+    "Empty content has an understandable state without fabricated entries",
+    "Invalid editorial content reports failure without fixture fallback and provides a recovery link",
+    "Mouse and keyboard expansion/collapse work with JavaScript disabled",
+    "No browser errors, endpoint calls or external requests"
+  ]
+}

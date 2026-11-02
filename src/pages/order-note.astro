@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+import OrderNoteField from '../features/order-note/OrderNoteField.astro';
+import { readCartConfig } from '../features/add-to-cart/add-to-cart.server.api';
+import { loadOrderNote } from '../features/order-note/order-note.server.api';
+import { getOrderNoteField } from '../features/order-note/order-note.service';
+const config = readCartConfig(process.env);
+const data = await getOrderNoteField(() => loadOrderNote(config, Astro.request));
+Astro.response.headers.set('Cache-Control', 'no-store');
+Astro.response.headers.set('Vary', 'Cookie');
+---
+<Layout title="Order note field | Astro starter">
+  <main>
+    <div class="demo-context"><span>{config.mode === 'demo' ? 'Demo note · Simulated saving, reload restores the example' : 'Live note · Saved on your current basket'}</span><a href="/">Back to product cards</a></div>
+    <div class="page-heading"><h1>Order note</h1><p>Enter instructions, edit an existing note, or clear it and save.</p></div>
+    {config.mode === 'demo' && <div class="demo-settings"><label for="note-demo-outcome">Demo save result</label><select id="note-demo-outcome"><option value="success">Confirm save</option><option value="error">Refuse save</option><option value="uncertain">Lose confirmation</option></select></div>}
+    <OrderNoteField id="order-note-example" data={data} mode={config.mode} />
+    {config.mode === 'live' && !data.available && <p class="cart-link"><a href="/add-to-cart">Add an item to your basket</a>, then reload this page.</p>}
+  </main>
+</Layout>
+<script>
+  document.querySelector<HTMLSelectElement>('#note-demo-outcome')?.addEventListener('change', event => {
+    document.querySelector<HTMLElement>('[data-order-note]')!.dataset.demoOutcome = (event.currentTarget as HTMLSelectElement).value;
+  });
+</script>
+<style>
+  .demo-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 32px; font-size: 13px; }
+  select { min-height: 44px; max-width: 100%; padding: 8px 36px 8px 12px; border: 1px solid #bbb; border-radius: 0; background: #fff; color: #202020; font: inherit; }
+  select:focus-visible { outline: 2px solid #202020; outline-offset: 3px; }
+  .cart-link { max-width: 60ch; color: #666; font-size: 14px; line-height: 1.6; }
+</style>

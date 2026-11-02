@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CartDrawer from '../features/cart-drawer/CartDrawer.astro';
+import AddToCartButton from '../features/add-to-cart/AddToCartButton.astro';
+import QuantityStepper from '../features/quantity-stepper/QuantityStepper.astro';
+import { prepareQuantityStepper } from '../features/quantity-stepper/quantity-stepper.service';
+import { prepareDrawer } from '../features/cart-drawer/cart-drawer.service';
+import { readDrawerConfig } from '../features/cart-drawer/cart-drawer.server.api';
+const config = readDrawerConfig(process.env);
+const initialView = prepareDrawer({ items: [], totals: null });
+const quantity = prepareQuantityStepper({ value: 1, min: 1, max: 10 });
+---
+<Layout title="Cart drawer | Astro starter">
+  <main>
+    <div class="demo-context">
+      <span>{config.mode === 'demo' ? 'Demo basket · Local state and simulated responses' : 'Live basket · Commerce quote and cart cookies'}</span>
+      <a href="/">Back to product cards</a>
+    </div>
+    <div class="page-heading"><h1>Cart drawer</h1><p>Open your basket to review items and totals, then follow the supplied checkout link.</p></div>
+    <button class="open-basket" type="button" data-open-cart="basket-drawer" aria-controls="basket-drawer" aria-haspopup="dialog" aria-expanded="false" disabled>Open basket</button>
+    {config.mode === 'demo' ? <section class="demo-controls" aria-labelledby="demo-title">
+      <h2 id="demo-title">Try the basket</h2>
+      <label for="drawer-scenario">Demo basket response</label>
+      <select id="drawer-scenario" data-drawer-scenario>
+        <option value="populated">Populated basket</option><option value="empty">Empty basket</option><option value="error">Failed request</option>
+      </select>
+      <p>The floating Basket button and Open basket button open the same drawer. A confirmed add also opens it.</p>
+      <h3>Performance Tee</h3>
+      <form id="drawer-add-demo">
+        <fieldset data-cart-selection><legend class="sr-only">Performance Tee selection</legend>
+          <input type="hidden" name="storefront_uid" value="33333333-3333-4333-8333-333333333333" />
+          <QuantityStepper id="drawer-demo-quantity" name="qty" quantity={quantity} />
+        </fieldset>
+        <AddToCartButton id="drawer-demo-add" formId="drawer-add-demo" mode="demo" />
+      </form>
+    </section> : <p class="live-note">Basket reads use your current cart. Add an item on the <a href="/add-to-cart">add-to-cart page</a> first if needed. Live removal is not connected. {config.checkoutHref ? 'Checkout uses the configured destination.' : 'Supply CART_CHECKOUT_URL to enable the checkout link.'}</p>}
+  </main>
+  <CartDrawer id="basket-drawer" mode={config.mode} initialView={initialView} />
+</Layout>
+<style>
+  .open-basket { min-height: 48px; padding: 12px 24px; border: 1px solid #202020; border-radius: 0; background: #fff; color: #202020; font: inherit; font-size: 14px; cursor: pointer; }
+  .open-basket:focus-visible { outline: 2px solid #202020; outline-offset: 4px; }
+  .demo-controls { max-width: 560px; margin-top: 48px; }
+  h2 { font-size: 22px; font-weight: 500; margin: 0 0 24px; }
+  h3 { margin: 32px 0 20px; font-size: 18px; font-weight: 500; }
+  label { display: block; margin-bottom: 10px; font-size: 14px; }
+  select { min-height: 44px; max-width: 100%; padding: 8px 36px 8px 12px; border: 1px solid #ccc; border-radius: 0; background: #fff; color: #202020; font: inherit; font-size: 14px; }
+  p { color: #666; font-size: 14px; line-height: 1.6; }
+  fieldset { min-width: 0; padding: 0; margin: 0; border: 0; }
+  .live-note { max-width: 65ch; margin-top: 32px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+</style>

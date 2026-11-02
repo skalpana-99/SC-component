@@ -1,0 +1,87 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AddToCartButton from '../features/add-to-cart/AddToCartButton.astro';
+import QuantityStepper from '../features/quantity-stepper/QuantityStepper.astro';
+import { prepareQuantityStepper } from '../features/quantity-stepper/quantity-stepper.service';
+import { cartExamples } from '../features/add-to-cart/add-to-cart.service';
+import { loadCartCatalog, readCartConfig } from '../features/add-to-cart/add-to-cart.server.api';
+import type { CartExample, CartMode } from '../features/add-to-cart/add-to-cart.types';
+
+let examples: CartExample[] = [];
+let mode: CartMode = 'demo';
+let failed = false;
+try {
+  const config = readCartConfig(process.env);
+  mode = config.mode;
+  examples = cartExamples(await loadCartCatalog(config));
+} catch {
+  failed = true;
+  Astro.response.status = 503;
+}
+const quantity = prepareQuantityStepper({ value: 1, min: 1, max: 10 });
+Astro.response.headers.set('Cache-Control', 'no-store');
+---
+<Layout title="Add to cart button | Astro starter">
+  <main>
+    <div class="demo-context">
+      <span>{mode === 'demo' ? 'Demo cart mode · Simulated responses, no cart changes' : 'Live cart mode · Changes your commerce cart'}</span>
+      <a href="/">Back to product cards</a>
+    </div>
+    <div class="page-heading">
+      <h1>Add to cart</h1>
+      <p>Select an option where available, choose a quantity, then add it to your cart.</p>
+    </div>
+    {failed ? <section class="state"><h2>We couldn’t load the product choices</h2><p>Check the cart mode and commerce configuration, then try again.</p></section>
+    : examples.length === 0 ? <section class="state"><h2>No products available for this example</h2><p>This demo requires a listed, individually purchasable product. Packs use a separate flow.</p></section>
+    : <ul class="cart-examples" aria-label="Add to cart examples">
+      {examples.map(example => <li>
+        <h2>{example.title}</h2>
+        <form id={example.id}>
+          <fieldset data-cart-selection>
+            <legend class="sr-only">Selection for {example.title}</legend>
+            <input type="hidden" name="storefront_uid" value={example.storefrontUid} />
+            {example.requiresVariant && <div class="option-field">
+              <label for={`${example.id}-variant`}>Product option</label>
+              <select name="variant" id={`${example.id}-variant`} aria-required="true">
+                <option value="">Choose an option</option>
+                {example.variants.map(variant => <option value={variant.value}>{variant.label}</option>)}
+              </select>
+            </div>}
+            <QuantityStepper id={`${example.id}-quantity`} name="qty" quantity={quantity} />
+          </fieldset>
+          <AddToCartButton id={`${example.id}-add`} formId={example.id} mode={mode} requiresVariant={example.requiresVariant}
+            disabled={example.requiresVariant && example.variants.length === 0} />
+        </form>
+      </li>)}
+      {mode === 'demo' && <li>
+        <h2>Unavailable option</h2>
+        <p class="example-note">This example simulates a server refusal so you can inspect the error state.</p>
+        <form id="cart-refusal">
+          <fieldset data-cart-selection>
+            <legend class="sr-only">Unavailable option selection</legend>
+            <input type="hidden" name="storefront_uid" value="22222222-2222-4222-8222-222222222222" />
+            <input type="hidden" name="variant" value="DEMO-OXFORD-M" />
+            <QuantityStepper id="refusal-quantity" name="qty" quantity={quantity} />
+          </fieldset>
+          <AddToCartButton id="refusal-add" formId="cart-refusal" mode="demo" requiresVariant demoOutcome="error" />
+        </form>
+      </li>}
+    </ul>}
+    <p class="limits-note">Example quantity limits: 1-10, supplied by this page. Adding does not reserve stock or start checkout.</p>
+  </main>
+</Layout>
+<style>
+  .cart-examples { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 64px; padding: 0; margin: 0; list-style: none; }
+  li { min-width: 0; padding: 8px 0 24px; border-bottom: 1px solid #e7e7e7; }
+  h2 { margin: 0 0 24px; font-size: 20px; font-weight: 500; line-height: 1.4; }
+  fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+  .option-field { margin-bottom: 24px; }
+  label { display: block; margin-bottom: 10px; font-size: 14px; }
+  select { max-width: 100%; min-height: 44px; padding: 8px 36px 8px 12px; background: #fff; border: 1px solid #ccc; border-radius: 0; color: #202020; font: inherit; font-size: 14px; }
+  select:focus-visible { outline: 2px solid #202020; outline-offset: 3px; }
+  .example-note, .limits-note { color: #666; font-size: 14px; line-height: 1.6; }
+  .example-note { margin: -8px 0 24px; max-width: 46ch; }
+  .limits-note { margin-top: 36px; font-size: 12px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 767px) { .cart-examples { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
+</style>

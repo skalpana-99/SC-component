@@ -1,0 +1,67 @@
+---
+import type { CartItemProps as Props } from './cart-item.types';
+const { item, removalMode, demoOutcome = 'success', disabled = false, managed = false } = Astro.props;
+const statusId = `cart-item-${encodeURIComponent(item.id)}-remove-status`;
+---
+<article class="cart-item" data-cart-item data-item-id={item.id} data-removal-mode={removalMode}
+  data-demo-outcome={demoOutcome} data-disabled={String(disabled)} data-managed={String(managed)} data-state="idle">
+  <div class="item-image">
+    {item.image ? <img src={item.image.src} alt={item.image.alt} width={item.image.width} height={item.image.height} decoding="async" />
+      : <div class="image-placeholder" role="img" aria-label={`Image unavailable for ${item.title}`}><span>Image unavailable</span></div>}
+  </div>
+  <div class="item-details">
+    <h3>{item.title}</h3>
+    {item.options.length > 0 && <dl class="item-options">
+      {item.options.map(option => <div><dt>{option.name}:</dt><dd>{option.value}</dd></div>)}
+    </dl>}
+    <p class="item-quantity">Quantity <span>{item.quantity}</span></p>
+  </div>
+  <div class="item-actions">
+    <p class="item-price"><span class="price-label">Unit price</span><span>{item.unitPrice}</span></p>
+    <button type="button" data-remove-cart-item aria-label={`Remove ${item.title}`} aria-describedby={statusId} disabled>Remove</button>
+  </div>
+  <p class="item-status" id={statusId} role="status" aria-label="Item removal status" aria-live="polite" aria-atomic="true"></p>
+  <noscript><p class="item-status">Enable JavaScript to remove this item.</p></noscript>
+</article>
+<script>
+  import { initCartItems } from './cart-item.browser';
+  initCartItems();
+</script>
+<style>
+  .cart-item { display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; gap: 0 24px; padding: 28px 0; border-bottom: 1px solid #e7e7e7; }
+  .item-image { grid-row: 1 / span 2; aspect-ratio: 3 / 4; background: #f3f3f1; }
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .image-placeholder { display: grid; place-items: center; height: 100%; padding: 12px; text-align: center; color: #666; font-size: 12px; line-height: 1.5; }
+  h3 { max-width: 44ch; margin: 0 0 12px; font-size: 16px; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+  .item-options { margin: 0; color: #666; font-size: 14px; line-height: 1.6; }
+  .item-options > div { display: flex; flex-wrap: wrap; column-gap: 5px; }
+  dt, dd { margin: 0; overflow-wrap: anywhere; }
+  .item-quantity { margin: 14px 0 0; font-size: 14px; line-height: 1.5; }
+  .item-quantity span { margin-left: 8px; }
+  .item-actions { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .item-price { display: flex; flex-direction: column; gap: 6px; margin: 0; font-size: 14px; line-height: 1.5; white-space: nowrap; }
+  .price-label { color: #666; font-size: 12px; text-align: right; }
+  button { min-height: 44px; padding: 8px 0 8px 12px; border: 0; border-radius: 0; background: transparent; color: #454545; font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+  button:hover:not(:disabled) { color: #111; }
+  button:focus-visible { outline: 2px solid #202020; outline-offset: 3px; }
+  button:disabled { color: #777; cursor: not-allowed; }
+  .item-status { grid-column: 2 / -1; margin: 12px 0 0; color: #666; font-size: 13px; line-height: 1.6; }
+  .item-status:empty { display: none; }
+  [data-state="error"] .item-status, [data-state="uncertain"] .item-status { color: #9b2424; }
+  @media (max-width: 767px) {
+    .cart-item { grid-template-columns: 80px minmax(0, 1fr); column-gap: 16px; padding: 24px 0; }
+    .item-actions { grid-column: 2; flex-direction: row; align-items: flex-end; gap: 12px; margin-top: 18px; }
+    .price-label { text-align: left; }
+    .item-price { white-space: normal; }
+    .item-price > span:last-child { white-space: nowrap; }
+    .item-image { grid-row: 1 / span 3; align-self: start; }
+  }
+  @container (max-width: 540px) {
+    .cart-item { grid-template-columns: 80px minmax(0, 1fr); column-gap: 16px; padding: 24px 0; }
+    .item-actions { grid-column: 2; flex-direction: row; align-items: flex-end; gap: 12px; margin-top: 18px; }
+    .price-label { text-align: left; }
+    .item-price { white-space: normal; }
+    .item-price > span:last-child { white-space: nowrap; }
+    .item-image { grid-row: 1 / span 3; align-self: start; }
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+interface Props { title: string }
+const { title } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Reusable Astro storefront components with focused demos and clear data boundaries." />
+    <title>{title}</title>
+    <link rel="icon" href="data:," />
+  </head>
+  <body><slot /></body>
+</html>
+<style is:global>
+  * { box-sizing: border-box; }
+  html { color-scheme: light; background: #fff; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #202020; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-underline-offset: 4px; }
+  a:focus-visible { outline: 2px solid #202020; outline-offset: 6px; }
+  main { max-width: 1280px; margin: 0 auto; padding: 48px 48px 64px; }
+  .demo-context { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: center; padding-bottom: 22px; border-bottom: 1px solid #e7e7e7; font-size: 12px; color: #666; }
+  .demo-context a { color: #454545; }
+  .page-heading { margin: 44px 0 30px; }
+  h1 { margin: 0 0 12px; font-size: clamp(28px, 4vw, 40px); line-height: 1.15; letter-spacing: -1.3px; font-weight: 500; }
+  .page-heading p { margin: 0; color: #707070; font-size: 14px; line-height: 1.6; }
+  .product-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+  .product-grid > li { min-width: 0; }
+  .state { padding: 52px 0; max-width: 560px; }
+  .state h2 { font-size: 22px; font-weight: 500; }
+  .state p { color: #666; line-height: 1.65; }
+  @media (max-width: 767px) {
+    main { padding: 24px 20px 48px; }
+    .page-heading { margin: 32px 0 24px; }
+    .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 16px; }
+  }
+  @media (max-width: 479px) {
+    .product-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  }
+</style>

@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+import QuantityStepper from '../features/quantity-stepper/QuantityStepper.astro';
+import { prepareQuantityStepper } from '../features/quantity-stepper/quantity-stepper.service';
+
+const examples = [
+  { id: 'everyday', title: 'Everyday quantity', description: 'Starts at the minimum. Increase to try the upper limit.', value: 1, min: 1, max: 10 },
+  { id: 'upper-limit', title: 'At the upper limit', description: 'Decrease is available; increase stays disabled until there is room.', value: 5, min: 1, max: 5 },
+  { id: 'zero', title: 'Zero is allowed', description: 'The supplied minimum is zero. No product or stock rule is inferred.', value: 0, min: 0, max: 3 },
+  { id: 'fixed', title: 'A fixed quantity', description: 'Equal minimum and maximum leave both controls disabled.', value: 2, min: 2, max: 2 },
+  { id: 'disabled', title: 'Disabled control', description: 'The consuming page explicitly disables this stepper.', value: 3, min: 1, max: 8, disabled: true },
+  { id: 'long-label', title: 'A longer label', description: 'Each instance has its own limits and independent state.', label: 'Quantity for a lightweight everyday jacket with a longer product name', value: 4, min: 2, max: 6 },
+].map((example) => ({ ...example, quantity: prepareQuantityStepper(example) }));
+---
+<Layout title="Quantity stepper | Astro starter">
+  <main>
+    <div class="demo-context">
+      <span>Demo · Supplied local limits</span>
+      <a href="/">Back to product cards</a>
+    </div>
+    <div class="page-heading">
+      <h1>Quantity stepper</h1>
+      <p>Increase or decrease quantity within the limits supplied by the page.</p>
+    </div>
+    <ul class="stepper-examples" aria-label="Quantity stepper examples">
+      {examples.map((example) => (
+        <li>
+          <h2>{example.title}</h2>
+          <p>{example.description}</p>
+          <p class="limits">Minimum {example.min} · Maximum {example.max}</p>
+          <QuantityStepper id={example.id} quantity={example.quantity}
+            label={example.label ?? 'Quantity'} name={`quantity-${example.id}`} />
+        </li>
+      ))}
+    </ul>
+  </main>
+</Layout>
+
+<style>
+  .stepper-examples { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 64px; margin: 0; padding: 0; list-style: none; }
+  li { min-width: 0; padding: 8px 0 32px; border-bottom: 1px solid #e7e7e7; }
+  h2 { margin: 0 0 12px; font-size: 19px; line-height: 1.4; font-weight: 500; }
+  li > p { max-width: 46ch; margin: 0 0 18px; font-size: 14px; line-height: 1.6; color: #666; }
+  li > .limits { margin-bottom: 22px; font-size: 12px; color: #666; }
+  @media (max-width: 767px) { .stepper-examples { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
+</style>

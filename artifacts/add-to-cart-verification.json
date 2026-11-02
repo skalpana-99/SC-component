@@ -1,0 +1,18 @@
+{
+  "results": [
+    "Demo loading, selected quantity, confirmed success event and repeated-submit suppression",
+    "Missing variant is handled before a request; selected variant submits by keyboard",
+    "Definite server refusal shows a useful error and permits an intentional retry",
+    "Lost response is not presented as a definite failure and cannot trigger an automatic duplicate add",
+    "Demo mode cannot silently write to the live cart route",
+    "desktop: usable controls and no horizontal overflow",
+    "mobile: usable controls and no horizontal overflow",
+    "small-mobile: usable controls and no horizontal overflow",
+    "No-JavaScript state explains why the action is unavailable",
+    "Live stub: first-party HttpOnly session, reuse after reload, selected variant, no token storage",
+    "Cross-origin actions and arbitrary proxy paths cannot reach commerce",
+    "Live refusal: no new session, retry or demo fallback",
+    "Live http: no new session, retry or demo fallback",
+    "No browser runtime errors"
+  ]
+}

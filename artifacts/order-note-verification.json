@@ -1,0 +1,25 @@
+{
+  "results": [
+    "Explicit save only; pending duplicate submits are suppressed and newer in-flight edits are preserved",
+    "Keyboard save confirms the edited note and marks it unchanged",
+    "Clearing submits an explicit null and confirms the cleared state",
+    "Unicode code-point limits and source-confirmed refusal rules are enforced without truncating the draft",
+    "Server refusal retains the draft and offers an intentional retry",
+    "Unconfirmed save is not labelled saved, makes no automatic retry and can be retried explicitly",
+    "A mismatched success response cannot falsely confirm a note was saved",
+    "desktop: readable field and controls without horizontal overflow",
+    "mobile: readable field and controls without horizontal overflow",
+    "small-mobile: readable field and controls without horizontal overflow",
+    "No-JavaScript state explains that editing and saving are unavailable",
+    "Demo configuration cannot silently call the live saving action",
+    "No cart means unavailable saving and no automatic session creation",
+    "Live read filters contact details; note-only save persists after reload without changing contact/address data",
+    "Saved markup-like text remains plain text after server rendering",
+    "Live clearing persists an explicit null",
+    "Live closed: draft retained, no false saved confirmation or fixture fallback",
+    "Live write-error: draft retained, no false saved confirmation or fixture fallback",
+    "Live missing-column: draft retained, no false saved confirmation or fixture fallback",
+    "Live initial read failure is explicit and disables editing rather than showing a demo note",
+    "Same-origin enforcement and payload projection protect unrelated cart fields; no runtime errors occurred"
+  ]
+}

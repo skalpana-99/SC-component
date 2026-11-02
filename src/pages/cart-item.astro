@@ -1,0 +1,68 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CartItem from '../features/cart-item/CartItem.astro';
+import { getCartItems } from '../features/cart-item/cart-item.service';
+const items = await getCartItems();
+---
+<Layout title="Cart item | Astro starter">
+  <main>
+    <div class="demo-context">
+      <span>Demo · Local cart items and simulated removal</span>
+      <a href="/">Back to product cards</a>
+    </div>
+    <div class="page-heading">
+      <h1>Cart item</h1>
+      <p>Selected options, unit price and quantity, with a confirmed removal action.</p>
+    </div>
+    <div class="example-settings">
+      <label for="removal-outcome">Demo removal result</label>
+      <select id="removal-outcome">
+        <option value="success">Confirm removal</option>
+        <option value="error">Refuse removal</option>
+        <option value="uncertain">Lose confirmation</option>
+      </select>
+    </div>
+    <section aria-labelledby="items-title">
+      <h2 id="items-title">Your items</h2>
+      <p class="cart-summary" role="status" aria-live="polite" aria-atomic="true">{items.length} items shown</p>
+      <div class="cart-items" data-demo-cart>
+        {items.map(item => <CartItem item={item} removalMode="demo" />)}
+      </div>
+      <div class="empty-cart" hidden>
+        <h3 tabindex="-1">Your cart is empty</h3>
+        <p>All demo items have been removed. Reload the page to restore the examples.</p>
+        <a href="/cart-item">Reset demo</a>
+      </div>
+    </section>
+    <p class="demo-note">These examples are independent of your live cart. Removal is not connected to a Commerce API endpoint.</p>
+  </main>
+</Layout>
+<script>
+  const cart = document.querySelector<HTMLElement>('[data-demo-cart]')!;
+  const summary = document.querySelector<HTMLElement>('.cart-summary')!;
+  const empty = document.querySelector<HTMLElement>('.empty-cart')!;
+  document.querySelector<HTMLSelectElement>('#removal-outcome')!.addEventListener('change', (event) => {
+    const outcome = (event.currentTarget as HTMLSelectElement).value;
+    cart.querySelectorAll<HTMLElement>('[data-cart-item]').forEach(item => { item.dataset.demoOutcome = outcome; });
+  });
+  cart.addEventListener('cartitemremoved', () => {
+    const remaining = cart.querySelectorAll('[data-cart-item]:not([data-state="removed"])').length;
+    summary.textContent = `Item removed. ${remaining} ${remaining === 1 ? 'item' : 'items'} shown.`;
+    if (remaining === 0) {
+      empty.hidden = false;
+      empty.querySelector<HTMLElement>('h3')!.focus();
+    }
+  });
+</script>
+<style>
+  section { max-width: 880px; }
+  h2 { margin: 36px 0 8px; font-size: 22px; font-weight: 500; }
+  .cart-summary { margin: 0; color: #666; font-size: 13px; line-height: 1.6; }
+  .example-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 13px; }
+  select { min-height: 44px; max-width: 100%; padding: 8px 36px 8px 12px; border: 1px solid #ccc; border-radius: 0; background: #fff; color: #202020; font: inherit; }
+  select:focus-visible { outline: 2px solid #202020; outline-offset: 3px; }
+  .empty-cart { padding: 40px 0; }
+  .empty-cart h3 { font-size: 20px; font-weight: 500; }
+  .empty-cart p, .demo-note { color: #666; font-size: 14px; line-height: 1.6; }
+  .demo-note { max-width: 65ch; margin-top: 32px; font-size: 12px; }
+</style>

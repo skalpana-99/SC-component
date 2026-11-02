@@ -1,0 +1,15 @@
+{
+  "results": [
+    "Image, selected options, supplied unit price and quantity render; missing image and no-options cases work",
+    "desktop: full long title, readable item layout and no overflow",
+    "mobile: full long title, readable item layout and no overflow",
+    "small-mobile: full long title, readable item layout and no overflow",
+    "Definite removal failure retains the row, price and quantity and permits an intentional retry",
+    "Keyboard removal waits for confirmation, suppresses repeat clicks, emits one event and moves focus",
+    "Removing all items produces an understandable empty state and moves focus to it",
+    "Lost confirmation retains the item and blocks blind retries",
+    "External removal without a handler is unavailable and never falls back to demo removal",
+    "Without JavaScript item details remain visible and the unavailable action is explained",
+    "No runtime errors, remote requests or live cart mutations"
+  ]
+}

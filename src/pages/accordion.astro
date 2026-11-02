@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Accordion from '../features/accordion/Accordion.astro';
+import { prepareAccordion } from '../features/accordion/accordion.service';
+import fixture from '../features/accordion/accordion.demo.json';
+import type { AccordionData } from '../features/accordion/accordion.types';
+
+// Page-supplied content only. No CMS endpoint or authentication contract is assumed.
+const requestedExample = Astro.url.searchParams.get('example');
+const example = requestedExample === 'empty' || requestedExample === 'invalid' ? requestedExample : 'sample';
+const content = example === 'empty' ? { items: [] }
+  : example === 'invalid' ? { items: [{ question: 'An incomplete editorial entry', answer: '' }] }
+  : fixture;
+let data: AccordionData = { items: [] };
+let failed = false;
+try {
+  data = prepareAccordion(content);
+} catch {
+  failed = true;
+  Astro.response.status = 503;
+}
+const edgeCases = prepareAccordion({ items: [
+  {
+    question: 'A deliberately long question about product care, fit and the information shoppers may need before choosing an item for their everyday wardrobe',
+    answer: 'Long editorial answers wrap naturally and stay in the document, ready to read when expanded.\n\nThis second paragraph checks spacing between separate ideas. A deliberately unbroken value also wraps: ExampleEditorialReferenceWithoutAnySpacesForSmallScreenLayoutChecks1234567890.',
+  },
+  { question: 'Can questions contain Unicode and plain-text examples?', answer: 'ඔව් — Unicode text is preserved.\nLiteral markup such as <strong>sample</strong> is displayed as text; it is never executed or treated as HTML.' },
+] });
+Astro.response.headers.set('Cache-Control', 'no-store');
+---
+<Layout title="Accordion / FAQ | Astro starter">
+  <main>
+    <div class="demo-context"><span>Demo · Local editorial fixture · CMS not connected</span><a href="/">Back to product cards</a></div>
+    <div class="page-heading"><h1>Accordion / FAQ</h1><p>Expand a question to read its answer. Each item opens independently.</p></div>
+    <nav class="examples" aria-label="FAQ content examples">
+      <a href="/accordion" aria-current={example === 'sample' ? 'page' : undefined}>Sample content</a>
+      <a href="/accordion?example=empty" aria-current={example === 'empty' ? 'page' : undefined}>Empty content</a>
+      <a href="/accordion?example=invalid" aria-current={example === 'invalid' ? 'page' : undefined}>Invalid content</a>
+    </nav>
+    <div class="faq-examples">
+      <section aria-labelledby="faq-title">
+        <h2 id="faq-title">Frequently asked questions</h2>
+        {failed ? <div class="content-error"><h3>We couldn’t load the FAQ content</h3><p>The sample entry has no answer. Check the editorial source and try again.</p><a href="/accordion">Return to sample content</a></div> : <Accordion data={data} />}
+      </section>
+      {!failed && example !== 'empty' && <section aria-labelledby="edge-title"><h2 id="edge-title">Long content &amp; plain text</h2><Accordion data={edgeCases} /></section>}
+    </div>
+  </main>
+</Layout>
+<style>
+  .examples { display: flex; flex-wrap: wrap; gap: 16px 24px; margin: 0 0 36px; font-size: 13px; color: #666; }
+  .examples [aria-current] { color: #202020; text-decoration-thickness: 2px; }
+  .faq-examples { max-width: 800px; }
+  section + section { margin-top: 56px; }
+  h2 { margin: 0 0 22px; font-size: 22px; line-height: 1.4; font-weight: 500; }
+  .content-error { padding: 24px 0; border-top: 1px solid #e7e7e7; font-size: 14px; line-height: 1.7; }
+  h3 { margin: 0; font-size: 18px; font-weight: 500; }
+  .content-error p { color: #666; }
+</style>

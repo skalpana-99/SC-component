@@ -1,0 +1,22 @@
+---
+import ProductCard from '../products/ProductCard.astro';
+import type { RelatedProductsProps as Props } from './related-products.types';
+const { id, data, heading = 'Related products' } = Astro.props;
+---
+<section class="related-products" aria-labelledby={`${id}-heading`}>
+  <h2 id={`${id}-heading`}>{heading}</h2>
+  {data.products.length > 0 ? (
+    <ul role="list" class="related-grid">
+      {data.products.map(product => <li><ProductCard product={product} headingLevel="h3" /></li>)}
+    </ul>
+  ) : <p class="empty">No related products to show yet.</p>}
+</section>
+<style>
+  .related-products { min-width: 0; }
+  h2 { margin: 0 0 28px; font-size: 24px; font-weight: 500; line-height: 1.4; overflow-wrap: anywhere; }
+  .related-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+  li { min-width: 0; }
+  .empty { margin: 0; color: #666; font-size: 14px; line-height: 1.7; }
+  @media (max-width: 767px) { .related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 16px; } }
+  @media (max-width: 479px) { .related-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; } }
+</style>

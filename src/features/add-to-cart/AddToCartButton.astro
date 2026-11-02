@@ -1,0 +1,24 @@
+---
+import type { AddToCartButtonProps as Props } from './add-to-cart.types';
+const { id, formId, mode, requiresVariant = false, disabled = false, demoOutcome = 'success' } = Astro.props;
+---
+<div class="add-to-cart" data-add-to-cart data-mode={mode} data-demo-outcome={demoOutcome}
+  data-requires-variant={String(requiresVariant)} data-disabled={String(disabled)} data-state="idle">
+  <button id={id} type="submit" form={formId} aria-describedby={`${id}-status`} disabled>Add to cart</button>
+  <p id={`${id}-status`} class="cart-status" role="status" aria-label="Cart action status" aria-live="polite" aria-atomic="true"></p>
+  <noscript><p class="cart-status">Enable JavaScript to add items to your cart.</p></noscript>
+</div>
+<script>
+  import { initAddToCartButtons } from './add-to-cart.browser';
+  initAddToCartButtons();
+</script>
+<style>
+  .add-to-cart { margin-top: 24px; max-width: 100%; }
+  button { min-height: 48px; padding: 12px 28px; border: 1px solid #202020; border-radius: 0; background: #202020; color: #fff; font: inherit; font-size: 14px; line-height: 1.5; cursor: pointer; }
+  button:hover:not(:disabled) { background: #3b3b3b; }
+  button:active:not(:disabled) { background: #505050; }
+  button:focus-visible { outline: 2px solid #202020; outline-offset: 4px; }
+  button:disabled { background: #e9e9e9; border-color: #e9e9e9; color: #666; cursor: not-allowed; }
+  .cart-status { min-height: 24px; margin: 14px 0 0; max-width: 48ch; color: #555; font-size: 14px; line-height: 1.6; }
+  [data-state="error"] .cart-status, [data-state="uncertain"] .cart-status { color: #9b2424; }
+</style>

@@ -1,0 +1,23 @@
+---
+import CartDrawerPanel from '../../../features/cart-drawer/CartDrawerPanel.astro';
+import { loadDrawerSnapshot, parseDrawerRequest, readDrawerConfig } from '../../../features/cart-drawer/cart-drawer.server.api';
+import { prepareDrawer } from '../../../features/cart-drawer/cart-drawer.service';
+import type { CartDrawerData } from '../../../features/cart-drawer/cart-drawer.types';
+
+const headers = { 'Content-Type': 'text/plain', 'Cache-Control': 'no-store' };
+if (Astro.request.method !== 'POST') return new Response('Method not allowed.', { status: 405, headers: { ...headers, Allow: 'POST' } });
+const origin = `${new URL(Astro.request.url).protocol}//${Astro.request.headers.get('host')}`;
+if (Astro.request.headers.get('origin') !== origin) return new Response('Request refused.', { status: 403, headers });
+let view: CartDrawerData;
+try {
+  const config = readDrawerConfig(process.env);
+  const input = parseDrawerRequest(await Astro.request.json());
+  const snapshot = await loadDrawerSnapshot(config, input, Astro.request);
+  view = prepareDrawer(snapshot, config.checkoutHref);
+} catch {
+  return new Response('Basket unavailable.', { status: 503, headers });
+}
+Astro.response.headers.set('Cache-Control', 'no-store');
+Astro.response.headers.set('Vary', 'Cookie');
+---
+<CartDrawerPanel view={view} />

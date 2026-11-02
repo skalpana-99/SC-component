@@ -1,0 +1,35 @@
+---
+import type { AccordionProps as Props } from './accordion.types';
+const { data } = Astro.props;
+---
+<div class="accordion">
+  {data.items.length === 0 ? <p class="empty">No questions available yet.</p> : data.items.map(item => (
+    <details>
+      <summary><span>{item.title}</span><span class="toggle" aria-hidden="true"></span></summary>
+      <div class="answer">{item.paragraphs.map(paragraph => <p>{paragraph}</p>)}</div>
+    </details>
+  ))}
+</div>
+<style>
+  .accordion { min-width: 0; border-top: 1px solid #e7e7e7; }
+  details { border-bottom: 1px solid #e7e7e7; }
+  summary {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 24px;
+    padding: 22px 0; list-style: none; cursor: pointer;
+    font-size: 16px; line-height: 1.5; font-weight: 500;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+  summary:hover { color: #555; }
+  summary:focus-visible { outline: 2px solid #202020; outline-offset: 4px; }
+  .toggle { position: relative; flex: 0 0 14px; height: 14px; align-self: center; }
+  .toggle::before, .toggle::after { content: ''; position: absolute; background: currentColor; }
+  .toggle::before { width: 14px; height: 1px; top: 6px; left: 0; }
+  .toggle::after { width: 1px; height: 14px; left: 6px; top: 0; }
+  details[open] .toggle::after { display: none; }
+  .answer { padding: 0 38px 24px 0; color: #666; font-size: 14px; line-height: 1.8; overflow-wrap: anywhere; }
+  .answer p { margin: 0 0 14px; white-space: pre-line; }
+  .answer p:last-child { margin-bottom: 0; }
+  .empty { margin: 0; padding: 24px 0; color: #666; font-size: 14px; line-height: 1.7; }
+  @media (max-width: 767px) { summary { gap: 18px; padding: 20px 0; } .answer { padding-right: 32px; } }
+</style>

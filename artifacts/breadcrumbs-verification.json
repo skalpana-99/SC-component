@@ -1,0 +1,13 @@
+{
+  "results": [
+    "Labelled navigation, ordered list, supplied ancestor link, non-linked current page and hidden separator semantics",
+    "Root hierarchy stays a single current item; absent data emits no empty navigation",
+    "desktop: long labels and unbroken text remain fully visible without horizontal overflow",
+    "mobile: long labels and unbroken text remain fully visible without horizontal overflow",
+    "small-mobile: long labels and unbroken text remain fully visible without horizontal overflow",
+    "Ancestor links support native keyboard navigation to the real home page",
+    "Existing checkout-link preview displays its real hierarchy and a working parent link",
+    "Complete markup and native navigation work with JavaScript disabled",
+    "No browser runtime errors, endpoint calls or external requests"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "question": "Where can I find more product information?",
+      "answer": "Use this answer to guide shoppers to the product details and care instructions supplied by your merchant.\n\nThis is sample editorial content. Replace it with approved information from your CMS before publishing."
+    },
+    {
+      "question": "How do I choose the right size?",
+      "answer": "Add your merchant’s size-guide instructions here. Include only sizing and fit information confirmed for the products in this storefront."
+    },
+    {
+      "question": "Where can I check delivery and return information?",
+      "answer": "Use this space for approved delivery and return guidance, or directions to the relevant policy pages. No delivery time, fee or return period is assumed in this demo."
+    }
+  ]
+}

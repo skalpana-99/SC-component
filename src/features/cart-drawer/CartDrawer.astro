@@ -1,0 +1,45 @@
+---
+import CartDrawerPanel from './CartDrawerPanel.astro';
+import type { CartDrawerProps as Props } from './cart-drawer.types';
+const { id, mode, initialView } = Astro.props;
+---
+<div data-cart-drawer data-mode={mode}>
+  <button type="button" class="floating-cart" data-open-cart={id} aria-controls={id} aria-haspopup="dialog" aria-expanded="false" disabled>
+    Basket <span class="basket-count" data-basket-count hidden></span>
+  </button>
+  <dialog id={id} aria-labelledby={`${id}-title`}>
+    <div class="drawer-shell">
+      <header class="drawer-header"><h2 id={`${id}-title`}>Your basket</h2><button type="button" data-close-cart autofocus>Close</button></header>
+      <div class="drawer-scroll">
+        <div class="drawer-feedback"><p role="status" aria-live="polite" aria-atomic="true" data-drawer-status></p><button type="button" data-retry-cart hidden>Try again</button></div>
+        <div data-drawer-content hidden><CartDrawerPanel view={initialView} /></div>
+      </div>
+    </div>
+  </dialog>
+  <noscript><p>Enable JavaScript to open the basket.</p></noscript>
+</div>
+<script>
+  import { initCartDrawers } from './cart-drawer.browser';
+  initCartDrawers();
+</script>
+<style>
+  .floating-cart { position: fixed; right: 24px; bottom: 24px; display: inline-flex; align-items: center; gap: 16px; min-height: 50px; padding: 14px 24px; background: #202020; color: #fff; border: 1px solid #202020; border-radius: 0; font: inherit; font-size: 14px; cursor: pointer; }
+  .basket-count { padding-left: 16px; border-left: 1px solid #777; font-variant-numeric: tabular-nums; }
+  .basket-count[hidden] { display: none; }
+  dialog { position: fixed; inset: 0; width: min(540px, 100vw); max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0 0 0 auto; padding: 0; border: 0; border-radius: 0; background: #fff; color: #202020; }
+  dialog::backdrop { background: rgb(0 0 0 / 35%); }
+  .drawer-shell { display: flex; flex-direction: column; height: 100%; }
+  .drawer-header { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 20px 28px; border-bottom: 1px solid #e7e7e7; }
+  h2 { margin: 0; font-size: 23px; font-weight: 500; letter-spacing: -0.5px; }
+  .drawer-header button, [data-retry-cart] { min-height: 44px; padding: 8px 4px; border: 0; background: transparent; color: #454545; font: inherit; font-size: 14px; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
+  .drawer-scroll { overflow-y: auto; overscroll-behavior: contain; padding: 0 28px 20px; }
+  .drawer-feedback p { margin: 16px 0 0; font-size: 13px; line-height: 1.6; color: #666; }
+  .drawer-feedback p:empty { display: none; }
+  button:focus-visible { outline: 2px solid #202020; outline-offset: 4px; }
+  button:disabled { cursor: not-allowed; }
+  @media (max-width: 767px) {
+    .floating-cart { right: 16px; bottom: 16px; }
+    .drawer-header { padding: 16px 20px; }
+    .drawer-scroll { padding: 0 20px 20px; }
+  }
+</style>

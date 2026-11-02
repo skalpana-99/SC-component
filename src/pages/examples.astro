@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../features/products/ProductCard.astro';
+import { parseCatalog } from '../features/products/products.api';
+import { getProductCards } from '../features/products/products.service';
+import fixture from '../features/products/catalog.demo.json';
+
+// An explicit visual test page. It never requests or impersonates a live catalogue.
+const examples = structuredClone(fixture);
+examples.products[0].title = 'A lightweight everyday track jacket with an intentionally long product title that wraps naturally';
+examples.products[0].storefront_uid = 'unmapped-demo-product';
+delete (examples.products[1] as Partial<typeof examples.products[1]>).compare_at_minor;
+const products = await getProductCards({ mode: 'demo' }, async () => parseCatalog(examples));
+---
+<Layout title="Card edge cases | Astro starter">
+  <main>
+    <div class="demo-context">
+      <span>Demo mode · Visual edge-case fixture</span>
+      <a href="/">Back to product cards</a>
+    </div>
+    <div class="page-heading">
+      <h1>Card edge cases</h1>
+      <p>Long title and missing image · No comparison price · Low stock</p>
+    </div>
+    <ul class="product-grid" aria-label="Product card edge cases">
+      {products.map((product) => <li><ProductCard product={product} /></li>)}
+    </ul>
+  </main>
+</Layout>

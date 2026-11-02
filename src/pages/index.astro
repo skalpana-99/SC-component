@@ -1,0 +1,49 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../features/products/ProductCard.astro';
+import { readProductsConfig, CatalogError } from '../features/products/products.api';
+import { getProductCards } from '../features/products/products.service';
+import type { ProductCardData } from '../features/products/products.types';
+
+let products: ProductCardData[] = [];
+let failed = false;
+let mode = process.env.PRODUCTS_DATA_MODE ?? 'demo';
+try {
+  const config = readProductsConfig(process.env);
+  mode = config.mode;
+  products = await getProductCards(config);
+} catch (error) {
+  failed = true;
+  Astro.response.status = 503;
+  console.error(error instanceof CatalogError ? error.message : 'Unexpected catalogue error.');
+}
+Astro.response.headers.set('Cache-Control', 'no-store');
+---
+<Layout title="Product card | Astro starter">
+  <main>
+    <div class="demo-context">
+      <span>{mode === 'demo' ? 'Demo mode · Local catalogue fixture' : mode === 'live' ? 'Live mode · Commerce catalogue' : 'Configuration error · Unknown data mode'}</span>
+      <a href="/examples">View card edge cases</a>
+    </div>
+    <div class="page-heading">
+      <h1>Everyday essentials</h1>
+      <p>{failed ? 'The catalogue is temporarily unavailable.' : `${products.length} products`}</p>
+    </div>
+    {failed ? (
+      <section class="state" aria-labelledby="error-title">
+        <h2 id="error-title">We couldn’t load the products</h2>
+        <p>Please try again shortly. If this continues, check the server’s commerce configuration and API response.</p>
+        <a href="/">Try again</a>
+      </section>
+    ) : products.length === 0 ? (
+      <section class="state" aria-labelledby="empty-title">
+        <h2 id="empty-title">No products to show yet</h2>
+        <p>Products will appear here when the catalogue contains items explicitly marked as listed.</p>
+      </section>
+    ) : (
+      <ul class="product-grid" aria-label="Products">
+        {products.map((product) => <li><ProductCard product={product} /></li>)}
+      </ul>
+    )}
+  </main>
+</Layout>

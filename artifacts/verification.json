@@ -1,0 +1,23 @@
+{
+  "results": [
+    "desktop: 3 columns, portrait images, correct price, no horizontal overflow",
+    "laptop: 3 columns, portrait images, correct price, no horizontal overflow",
+    "tablet: 3 columns, portrait images, correct price, no horizontal overflow",
+    "small-tablet: 2 columns, portrait images, correct price, no horizontal overflow",
+    "mobile: 1 columns, portrait images, correct price, no horizontal overflow",
+    "small-mobile: 1 columns, portrait images, correct price, no horizontal overflow",
+    "desktop edge cases: full long title, deliberate missing-image placeholder, absent comparison",
+    "mobile edge cases: full long title, deliberate missing-image placeholder, absent comparison",
+    "Example navigation returns to catalogue",
+    "Live stub: one catalogue request, listed:false excluded, unmapped image, no comparison",
+    "Live empty catalogue shows an understandable empty state",
+    "Live unlisted catalogue shows an understandable empty state",
+    "Live http failure: 503, clear error, no demo fallback",
+    "Live ok failure: 503, clear error, no demo fallback",
+    "Live json failure: 503, clear error, no demo fallback",
+    "Live price failure: 503, clear error, no demo fallback",
+    "Live missing configuration: no demo fallback",
+    "Live network refusal: no demo fallback",
+    "No browser runtime errors"
+  ]
+}

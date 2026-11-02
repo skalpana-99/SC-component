@@ -1,0 +1,14 @@
+{
+  "results": [
+    "Rapid repeated clicks stay within supplied limits and emit one bubbling event per actual change",
+    "Native keyboard activation works and controls re-enable away from boundaries",
+    "Zero minimum is respected and multiple instances maintain independent state",
+    "Fixed and explicitly disabled controls are inactive; quantity changes have a live output",
+    "Named form fields track quantity, omit disabled values, and reset with the form",
+    "desktop: responsive layout, full long label, accessible button sizes and no overflow",
+    "mobile: responsive layout, full long label, accessible button sizes and no overflow",
+    "small-mobile: responsive layout, full long label, accessible button sizes and no overflow",
+    "Without JavaScript the initial quantity remains visible and inactive controls are explained",
+    "No browser runtime errors or upstream requests"
+  ]
+}

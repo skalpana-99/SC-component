@@ -1,0 +1,36 @@
+---
+import type { QuantityStepperProps as Props } from './quantity-stepper.types';
+
+const { id, quantity, label = 'Quantity', name } = Astro.props;
+---
+<div class="quantity-stepper" data-quantity-stepper data-value={quantity.value}
+  data-min={quantity.min} data-max={quantity.max} data-disabled={String(quantity.disabled)}>
+  <span class="quantity-label" id={`${id}-label`}>{label}</span>
+  <div class="quantity-controls" role="group" aria-labelledby={`${id}-label`}>
+    <button type="button" data-action="decrease" aria-label="Decrease quantity"
+      aria-controls={id} disabled><span aria-hidden="true">−</span></button>
+    <output id={id} aria-label="Current quantity" aria-live="polite" aria-atomic="true">{quantity.value}</output>
+    <button type="button" data-action="increase" aria-label="Increase quantity"
+      aria-controls={id} disabled><span aria-hidden="true">+</span></button>
+  </div>
+  {name && <input type="hidden" name={name} value={quantity.value} disabled={quantity.disabled} />}
+  <noscript><p class="no-script">Enable JavaScript to change quantity.</p></noscript>
+</div>
+
+<script>
+  import { initQuantitySteppers } from './quantity-stepper.browser';
+  initQuantitySteppers();
+</script>
+
+<style>
+  .quantity-stepper { max-width: 100%; }
+  .quantity-label { display: block; margin-bottom: 10px; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+  .quantity-controls { display: inline-flex; align-items: center; border: 1px solid #ccc; background: #fff; }
+  button { display: grid; place-items: center; width: 46px; height: 46px; padding: 0; border: 0; border-radius: 0; background: #fff; color: #202020; font: inherit; font-size: 23px; cursor: pointer; }
+  button:hover:not(:disabled) { background: #f3f3f1; }
+  button:active:not(:disabled) { background: #e8e8e5; }
+  button:focus-visible { outline: 2px solid #202020; outline-offset: -4px; }
+  button:disabled { color: #999; cursor: not-allowed; }
+  output { min-width: 52px; padding: 0 8px; text-align: center; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .no-script { color: #666; font-size: 13px; line-height: 1.5; }
+</style>

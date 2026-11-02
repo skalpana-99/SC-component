@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from '../features/breadcrumbs/Breadcrumbs.astro';
+import { prepareBreadcrumbs } from '../features/breadcrumbs/breadcrumbs.service';
+
+const current = prepareBreadcrumbs({ ancestors: [{ label: 'Home', href: '/' }], currentPage: 'Breadcrumbs' });
+const nested = prepareBreadcrumbs({ ancestors: [{ label: 'Home', href: '/' }, { label: 'Cart drawer', href: '/cart-drawer' }], currentPage: 'Checkout link preview' });
+const long = prepareBreadcrumbs({
+  ancestors: [{ label: 'Home', href: '/' }, { label: 'Product card examples with a deliberately long navigation label', href: '/examples' }],
+  currentPage: 'A current page with a long title and AnUnbrokenNavigationLabelForCheckingSmallScreenWrapping',
+});
+const root = prepareBreadcrumbs({ ancestors: [], currentPage: 'Home' });
+const absent = prepareBreadcrumbs(null);
+---
+<Layout title="Breadcrumbs | Astro starter">
+  <main>
+    <div class="demo-context"><span>Demo · Supplied page and navigation data</span><a href="/">Back to product cards</a></div>
+    <div class="page-heading"><h1>Breadcrumbs</h1><p>A supplied navigation hierarchy, ending with the current page.</p></div>
+    <div class="breadcrumb-examples">
+      <section aria-labelledby="current-title"><h2 id="current-title">Current page</h2><Breadcrumbs breadcrumbs={current} label="Current page breadcrumb" /></section>
+      <section aria-labelledby="nested-title"><h2 id="nested-title">Nested page</h2><Breadcrumbs breadcrumbs={nested} label="Nested page breadcrumb" /><p><a href="/cart-drawer/checkout">View this hierarchy on the checkout link preview</a></p></section>
+      <section aria-labelledby="long-title"><h2 id="long-title">Long labels</h2><Breadcrumbs breadcrumbs={long} label="Long-label breadcrumb" /></section>
+      <section aria-labelledby="root-title"><h2 id="root-title">Single current page</h2><Breadcrumbs breadcrumbs={root} label="Home breadcrumb" /></section>
+      <section aria-labelledby="absent-title"><h2 id="absent-title">No navigation data</h2><Breadcrumbs breadcrumbs={absent} /><p>The component renders nothing when no hierarchy is supplied.</p></section>
+    </div>
+  </main>
+</Layout>
+<style>
+  .breadcrumb-examples { max-width: 880px; }
+  section { padding: 28px 0; border-bottom: 1px solid #e7e7e7; }
+  section:first-child { padding-top: 8px; }
+  h2 { margin: 0 0 20px; font-size: 19px; line-height: 1.4; font-weight: 500; }
+  section p { margin: 18px 0 0; font-size: 13px; line-height: 1.6; color: #666; }
+</style>
